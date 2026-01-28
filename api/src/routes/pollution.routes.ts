@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { pollutionController } from '../controllers/pollution.controller';
 import { createPollutionDto, updatePollutionDto, pollutionFiltersDto } from '../dto/pollution.dto';
 import { validateRequest } from '../middleware/validate.middleware';
@@ -13,14 +13,14 @@ router.get(
   optionalAuthMiddleware,
   pollutionFiltersDto,
   validateRequest,
-  (req, res) => pollutionController.findAll(req, res)
+  (req: Request, res: Response) => pollutionController.findAll(req, res)
 );
 
 // Detail d'une pollution
 router.get(
   '/:id',
   optionalAuthMiddleware,
-  (req, res) => pollutionController.findById(req, res)
+  (req: Request, res: Response) => pollutionController.findById(req, res)
 );
 
 // Creer une pollution (authentification optionnelle - le createur sera enregistre si connecte)
@@ -30,7 +30,7 @@ router.post(
   uploadPhoto.single('photo'),
   createPollutionDto,
   validateRequest,
-  (req, res) => pollutionController.create(req, res)
+  (req: Request, res: Response) => pollutionController.create(req, res)
 );
 
 // Modifier une pollution (authentification requise)
@@ -40,14 +40,14 @@ router.put(
   uploadPhoto.single('photo'),
   updatePollutionDto,
   validateRequest,
-  (req, res) => pollutionController.update(req, res)
+  (req: Request, res: Response) => pollutionController.update(req, res)
 );
 
 // Supprimer une pollution (authentification requise)
 router.delete(
   '/:id',
   authMiddleware,
-  (req, res) => pollutionController.delete(req, res)
+  (req: Request, res: Response) => pollutionController.delete(req, res)
 );
 
 export default router;

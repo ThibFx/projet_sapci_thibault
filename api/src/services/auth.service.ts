@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { User } from '../models';
 import { jwtConfig, JwtPayload, RefreshTokenPayload } from '../config/jwt';
 import { RegisterBody, LoginBody, TokenResponse } from '../dto/auth.dto';
@@ -111,9 +111,11 @@ export class AuthService {
       email: user.email
     };
 
-    return jwt.sign(payload, jwtConfig.accessTokenSecret, {
+    const options: SignOptions = {
       expiresIn: jwtConfig.accessTokenExpiry
-    });
+    };
+
+    return jwt.sign(payload, jwtConfig.accessTokenSecret, options);
   }
 
   private generateRefreshToken(user: User): string {
@@ -121,9 +123,11 @@ export class AuthService {
       userId: user.id
     };
 
-    return jwt.sign(payload, jwtConfig.refreshTokenSecret, {
+    const options: SignOptions = {
       expiresIn: jwtConfig.refreshTokenExpiry
-    });
+    };
+
+    return jwt.sign(payload, jwtConfig.refreshTokenSecret, options);
   }
 }
 

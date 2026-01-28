@@ -30,28 +30,34 @@ export class PollutionService {
     const limit = filters.limit || 20;
     const offset = (page - 1) * limit;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const where: Record<string, any> = {};
+    // Construire les conditions de filtre
+    const conditions: WhereOptions<PollutionAttributes>[] = [];
 
     if (filters.search) {
-      where[Op.or as symbol] = [
-        { name: { [Op.iLike]: `%${filters.search}%` } },
-        { description: { [Op.iLike]: `%${filters.search}%` } },
-        { city: { [Op.iLike]: `%${filters.search}%` } }
-      ];
+      conditions.push({
+        [Op.or]: [
+          { name: { [Op.iLike]: `%${filters.search}%` } },
+          { description: { [Op.iLike]: `%${filters.search}%` } },
+          { city: { [Op.iLike]: `%${filters.search}%` } }
+        ]
+      } as WhereOptions<PollutionAttributes>);
     }
 
     if (filters.type) {
-      where.type = filters.type as PollutionAttributes['type'];
+      conditions.push({ type: filters.type as PollutionAttributes['type'] });
     }
 
     if (filters.city) {
-      where.city = { [Op.iLike]: `%${filters.city}%` };
+      conditions.push({ city: { [Op.iLike]: `%${filters.city}%` } } as WhereOptions<PollutionAttributes>);
     }
 
     if (filters.status) {
-      where.status = filters.status as PollutionAttributes['status'];
+      conditions.push({ status: filters.status as PollutionAttributes['status'] });
     }
+
+    const where: WhereOptions<PollutionAttributes> = conditions.length > 0
+      ? { [Op.and]: conditions }
+      : {};
 
     const { rows, count } = await Pollution.findAndCountAll({
       where,
