@@ -30,10 +30,11 @@ export class PollutionService {
     const limit = filters.limit || 20;
     const offset = (page - 1) * limit;
 
-    const where: WhereOptions<PollutionAttributes> = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: Record<string, any> = {};
 
     if (filters.search) {
-      where[Op.or as unknown as string] = [
+      where[Op.or as symbol] = [
         { name: { [Op.iLike]: `%${filters.search}%` } },
         { description: { [Op.iLike]: `%${filters.search}%` } },
         { city: { [Op.iLike]: `%${filters.search}%` } }
@@ -45,7 +46,7 @@ export class PollutionService {
     }
 
     if (filters.city) {
-      where.city = { [Op.iLike]: `%${filters.city}%` } as unknown as string;
+      where.city = { [Op.iLike]: `%${filters.city}%` };
     }
 
     if (filters.status) {
