@@ -64,7 +64,20 @@ export class PollutionController {
   async update(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const { id } = req.params;
+      const userId = req.user?.userId;
       const body: UpdatePollutionBody = req.body;
+
+      // Verifier que la pollution existe et appartient a l'utilisateur
+      const existingPollution = await pollutionService.findById(id);
+      if (!existingPollution) {
+        res.status(404).json({ message: 'Pollution non trouvee' });
+        return;
+      }
+
+      if (existingPollution.discovererId !== userId) {
+        res.status(403).json({ message: 'Vous ne pouvez modifier que vos propres pollutions' });
+        return;
+      }
 
       // Convertir le fichier en Base64 si present
       let photoData: PhotoData | null | undefined;
@@ -73,12 +86,6 @@ export class PollutionController {
       }
 
       const pollution = await pollutionService.update(id, body, photoData);
-
-      if (!pollution) {
-        res.status(404).json({ message: 'Pollution non trouvee' });
-        return;
-      }
-
       res.json(pollution);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Erreur lors de la mise a jour';
@@ -89,13 +96,21 @@ export class PollutionController {
   async delete(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      const success = await pollutionService.delete(id);
+      const userId = req.user?.userId;
 
-      if (!success) {
+      // Verifier que la pollution existe et appartient a l'utilisateur
+      const existingPollution = await pollutionService.findById(id);
+      if (!existingPollution) {
         res.status(404).json({ message: 'Pollution non trouvee' });
         return;
       }
 
+      if (existingPollution.discovererId !== userId) {
+        res.status(403).json({ message: 'Vous ne pouvez supprimer que vos propres pollutions' });
+        return;
+      }
+
+      await pollutionService.delete(id);
       res.status(204).send();
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Erreur lors de la suppression';
