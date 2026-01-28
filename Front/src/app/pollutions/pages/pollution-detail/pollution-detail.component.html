@@ -21,7 +21,7 @@
         </div>
         <nav>
           <a class="btn" routerLink="/pollutions">Retour à la liste</a>
-          <a *ngIf="isAuthenticated()" class="btn primary" [routerLink]="['/pollutions', pollution()?.id, 'edit']">Modifier</a>
+          <a *ngIf="isOwner()" class="btn primary" [routerLink]="['/pollutions', pollution()?.id, 'edit']">Modifier</a>
         </nav>
       </header>
 

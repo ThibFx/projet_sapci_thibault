@@ -87,8 +87,8 @@
           >
             {{ pollution.isFavorite ? '★' : '☆' }}
           </button>
-          <a *ngIf="isAuthenticated()" class="btn link" [routerLink]="['/pollutions', pollution.id, 'edit']">Modifier</a>
-          <button *ngIf="isAuthenticated()" type="button" class="btn danger" (click)="onDelete(pollution)">Supprimer</button>
+          <a *ngIf="isOwner(pollution)" class="btn link" [routerLink]="['/pollutions', pollution.id, 'edit']">Modifier</a>
+          <button *ngIf="isOwner(pollution)" type="button" class="btn danger" (click)="onDelete(pollution)">Supprimer</button>
           <a class="btn link" [routerLink]="['/pollutions', pollution.id]">Voir</a>
         </td>
       </tr>

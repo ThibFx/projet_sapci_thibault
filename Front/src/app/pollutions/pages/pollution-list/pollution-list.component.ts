@@ -40,6 +40,7 @@ export class PollutionListComponent {
   readonly isLoading = signal(false);
   readonly error = signal<string | null>(null);
   readonly isAuthenticated = this.store.selectSignal(AuthState.isAuthenticated);
+  readonly currentUser = this.store.selectSignal(AuthState.user);
   readonly togglingFavorite = signal<string | null>(null);
 
   readonly filterForm = this.fb.nonNullable.group({
@@ -143,6 +144,11 @@ export class PollutionListComponent {
 
   getPhotoUrl(pollution: Pollution): string | null {
     return getPhotoDataUrl(pollution);
+  }
+
+  isOwner(pollution: Pollution): boolean {
+    const user = this.currentUser();
+    return !!user && pollution.discovererId === user.id;
   }
 
   toggleFavorite(pollution: Pollution): void {

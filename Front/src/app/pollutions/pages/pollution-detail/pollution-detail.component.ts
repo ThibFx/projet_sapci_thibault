@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { finalize, map } from 'rxjs/operators';
 
@@ -36,6 +36,14 @@ export class PollutionDetailComponent {
   readonly typeLabels = POLLUTION_TYPE_LABELS;
   readonly statusLabels = POLLUTION_STATUS_LABELS;
   readonly isAuthenticated = this.store.selectSignal(AuthState.isAuthenticated);
+  readonly currentUser = this.store.selectSignal(AuthState.user);
+
+  // Verifie si l'utilisateur connecte est le createur de la pollution
+  readonly isOwner = computed(() => {
+    const user = this.currentUser();
+    const pollution = this.pollution();
+    return user && pollution && pollution.discovererId === user.id;
+  });
 
   constructor() {
     const id = this.route.snapshot.paramMap.get('id');
