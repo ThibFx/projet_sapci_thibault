@@ -1,0 +1,47 @@
+version: '3.8'
+
+# Docker Compose pour le developpement local avec PostgreSQL
+
+services:
+  # Base de donnees PostgreSQL
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: pollutracker
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pollutracker-dev
+
+  # Backend Node.js/Express
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/pollutracker
+      - JWT_ACCESS_SECRET=dev-access-secret-change-in-production
+      - JWT_REFRESH_SECRET=dev-refresh-secret-change-in-production
+      - CORS_ORIGIN=http://localhost:4200
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      - db
+    networks:
+      - pollutracker-dev
+
+networks:
+  pollutracker-dev:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  uploads_data:

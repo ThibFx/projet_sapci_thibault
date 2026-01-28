@@ -1,0 +1,50 @@
+<section class="auth-page">
+  <div class="auth-card">
+    <header class="auth-card__header">
+      <h1>Connexion</h1>
+      <p class="hint">Connectez-vous pour acceder a toutes les fonctionnalites</p>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <label>
+        Email
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="votre@email.com"
+          (input)="clearError()"
+        />
+        <span *ngIf="form.controls.email.invalid && form.controls.email.touched" class="error">
+          Veuillez entrer un email valide.
+        </span>
+      </label>
+
+      <label>
+        Mot de passe
+        <input
+          type="password"
+          formControlName="password"
+          placeholder="Votre mot de passe"
+          (input)="clearError()"
+        />
+        <span *ngIf="form.controls.password.invalid && form.controls.password.touched" class="error">
+          Le mot de passe doit contenir au moins 8 caracteres.
+        </span>
+      </label>
+
+      <div *ngIf="error()" class="alert error">
+        {{ error() }}
+      </div>
+
+      <footer class="auth-card__footer">
+        <button type="submit" class="btn primary" [disabled]="isLoading()">
+          {{ isLoading() ? 'Connexion...' : 'Se connecter' }}
+        </button>
+        <p class="auth-link">
+          Pas encore de compte ?
+          <a routerLink="/auth/register">Inscrivez-vous</a>
+        </p>
+      </footer>
+    </form>
+  </div>
+</section>

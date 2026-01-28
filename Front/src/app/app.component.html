@@ -1,0 +1,39 @@
+<div class="layout">
+  <header class="layout__header">
+    <div class="branding">
+      <div class="branding__icon" aria-hidden="true">CPT</div>
+      <div>
+        <h1 class="branding__title">
+          <span class="branding__title--clear">Clear</span>
+          <span class="branding__title--planet">Planet</span>
+          <span class="branding__title--tracker">Tracker</span>
+        </h1>
+      </div>
+    </div>
+    <nav class="layout__nav">
+      <a routerLink="/pollutions" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        Liste
+      </a>
+      <a *ngIf="isAuthenticated()" routerLink="/pollutions/new" routerLinkActive="active">
+        Ajouter
+      </a>
+      <a *ngIf="isAuthenticated()" routerLink="/favorites" routerLinkActive="active">
+        Favoris
+      </a>
+    </nav>
+    <div class="layout__auth">
+      <ng-container *ngIf="isAuthenticated(); else loginLinks">
+        <span class="user-name">{{ user()?.name }}</span>
+        <button type="button" class="btn-logout" (click)="logout()">Deconnexion</button>
+      </ng-container>
+      <ng-template #loginLinks>
+        <a routerLink="/auth/login" class="btn-auth">Connexion</a>
+        <a routerLink="/auth/register" class="btn-auth primary">Inscription</a>
+      </ng-template>
+    </div>
+  </header>
+
+  <main class="layout__content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

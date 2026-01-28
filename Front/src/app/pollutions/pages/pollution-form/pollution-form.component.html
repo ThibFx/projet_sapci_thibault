@@ -1,0 +1,125 @@
+<section class="pollution-form">
+  <header class="pollution-form__header">
+    <div>
+      <h1>{{ isEditing() ? 'Modifier une pollution' : 'Nouvelle pollution' }}</h1>
+      <p class="hint">
+        Renseignez un signalement complet pour suivre la pollution dans le temps.
+      </p>
+    </div>
+    <a class="btn" routerLink="/pollutions">Retour a la liste</a>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="grid">
+      <label>
+        Nom du signalement
+        <input type="text" formControlName="name" placeholder="Ex. Pollution industrielle" />
+        <span *ngIf="form.controls.name.invalid && form.controls.name.touched" class="error">
+          Le nom est requis (3 caracteres minimum).
+        </span>
+      </label>
+
+      <label>
+        Ville
+        <input type="text" formControlName="city" placeholder="Paris, Lyon..." />
+        <span *ngIf="form.controls.city.invalid && form.controls.city.touched" class="error">
+          La ville est obligatoire.
+        </span>
+      </label>
+
+      <label>
+        Type
+        <select formControlName="type">
+          <option *ngFor="let option of pollutionTypes" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </label>
+
+      <label>
+        Statut
+        <select formControlName="status">
+          <option *ngFor="let option of statuses" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </label>
+
+      <label>
+        Date d'enregistrement
+        <input type="date" formControlName="recordedAt" />
+        <span *ngIf="form.controls.recordedAt.invalid && form.controls.recordedAt.touched" class="error">
+          La date est obligatoire.
+        </span>
+      </label>
+    </div>
+
+    <!-- Section Photo -->
+    <fieldset class="photo-fieldset">
+      <legend>Photo</legend>
+      <div class="photo-upload">
+        <div *ngIf="photoPreview() || existingPhotoUrl()" class="photo-preview">
+          <img [src]="photoPreview() || existingPhotoUrl()" alt="Apercu de la photo" />
+          <button type="button" class="btn-remove" (click)="removePhoto()">Supprimer</button>
+        </div>
+        <div *ngIf="!photoPreview() && !existingPhotoUrl()" class="photo-placeholder">
+          <label class="btn upload-btn">
+            Choisir une photo
+            <input type="file" accept="image/jpeg,image/png,image/webp" (change)="onPhotoSelected($event)" hidden />
+          </label>
+          <p class="hint">JPEG, PNG ou WebP - Max 5 Mo</p>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Section Localisation -->
+    <fieldset class="location-fieldset">
+      <legend>Localisation</legend>
+      <div class="location-actions">
+        <button
+          type="button"
+          class="btn"
+          (click)="useCurrentLocation()"
+          [disabled]="isGettingLocation()"
+        >
+          {{ isGettingLocation() ? 'Localisation...' : 'Utiliser ma position' }}
+        </button>
+      </div>
+      <div class="grid location-grid">
+        <label>
+          Latitude
+          <input type="number" formControlName="latitude" step="0.00000001" placeholder="Ex. 48.8566" />
+        </label>
+        <label>
+          Longitude
+          <input type="number" formControlName="longitude" step="0.00000001" placeholder="Ex. 2.3522" />
+        </label>
+      </div>
+      <label class="full">
+        Adresse (optionnel)
+        <input type="text" formControlName="address" placeholder="123 rue exemple, 75001 Paris" />
+      </label>
+    </fieldset>
+
+    <label class="full">
+      Description
+      <textarea formControlName="description" rows="5" placeholder="Decrivez le contexte, les causes possibles..."></textarea>
+      <span *ngIf="form.controls.description.invalid && form.controls.description.touched" class="error">
+        La description est necessaire (10 caracteres minimum).
+      </span>
+    </label>
+
+    <div *ngIf="error()" class="alert error">
+      {{ error() }}
+    </div>
+
+    <footer class="actions">
+      <button type="submit" class="btn primary" [disabled]="isSubmitting()">
+        {{ isEditing() ? 'Mettre a jour' : 'Creer' }}
+      </button>
+      <button type="button" class="btn" [disabled]="isSubmitting()" (click)="form.reset(form.getRawValue())">
+        Reinitialiser
+      </button>
+    </footer>
+  </form>
+</section>

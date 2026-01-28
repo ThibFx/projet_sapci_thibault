@@ -1,0 +1,49 @@
+<section class="favorites-list">
+  <header class="favorites-list__header">
+    <div>
+      <h1>Mes Favoris</h1>
+      <p class="hint">Les pollutions que vous suivez</p>
+    </div>
+    <nav>
+      <a class="btn" routerLink="/pollutions">Retour a la liste</a>
+    </nav>
+  </header>
+
+  <div *ngIf="error() as message" class="alert error">{{ message }}</div>
+  <div *ngIf="isLoading()" class="loading">Chargement des favoris...</div>
+
+  <div *ngIf="!isLoading() && favorites().length > 0; else empty" class="favorites-grid">
+    <article *ngFor="let pollution of favorites(); trackBy: trackByPollutionId" class="favorite-card">
+      <div *ngIf="getPhotoUrl(pollution) as photoUrl" class="favorite-card__image">
+        <img [src]="photoUrl" [alt]="pollution.name" />
+      </div>
+      <div class="favorite-card__content">
+        <h2>
+          <a [routerLink]="['/pollutions', pollution.id]">{{ pollution.name }}</a>
+        </h2>
+        <div class="favorite-card__meta">
+          <span class="badge type">{{ getTypeLabel(pollution.type) }}</span>
+          <span class="badge status" [attr.data-status]="pollution.status">
+            {{ getStatusLabel(pollution.status) }}
+          </span>
+          <span class="city">{{ pollution.city }}</span>
+        </div>
+        <p class="description">{{ pollution.description | slice:0:150 }}...</p>
+        <footer class="favorite-card__actions">
+          <a class="btn link" [routerLink]="['/pollutions', pollution.id]">Voir</a>
+          <button type="button" class="btn danger" (click)="removeFavorite(pollution)">
+            Retirer
+          </button>
+        </footer>
+      </div>
+    </article>
+  </div>
+
+  <ng-template #empty>
+    <div *ngIf="!isLoading()" class="empty-state">
+      <p>Vous n'avez pas encore de favoris.</p>
+      <p>Explorez les pollutions et ajoutez-les a vos favoris pour les retrouver facilement.</p>
+      <a class="btn primary" routerLink="/pollutions">Explorer les pollutions</a>
+    </div>
+  </ng-template>
+</section>

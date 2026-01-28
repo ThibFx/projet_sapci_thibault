@@ -1,0 +1,85 @@
+<section class="auth-page">
+  <div class="auth-card">
+    <header class="auth-card__header">
+      <h1>Inscription</h1>
+      <p class="hint">Creez votre compte pour signaler des pollutions</p>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <label>
+        Nom
+        <input
+          type="text"
+          formControlName="name"
+          placeholder="Votre nom"
+          (input)="clearError()"
+        />
+        <span *ngIf="form.controls.name.invalid && form.controls.name.touched" class="error">
+          Le nom doit contenir entre 2 et 100 caracteres.
+        </span>
+      </label>
+
+      <label>
+        Email
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="votre@email.com"
+          (input)="clearError()"
+        />
+        <span *ngIf="form.controls.email.invalid && form.controls.email.touched" class="error">
+          Veuillez entrer un email valide.
+        </span>
+      </label>
+
+      <label>
+        Mot de passe
+        <input
+          type="password"
+          formControlName="password"
+          placeholder="Min. 8 caracteres"
+          (input)="clearError()"
+        />
+        <span *ngIf="form.controls.password.errors?.['required'] && form.controls.password.touched" class="error">
+          Le mot de passe est requis.
+        </span>
+        <span *ngIf="form.controls.password.errors?.['minlength'] && form.controls.password.touched" class="error">
+          Le mot de passe doit contenir au moins 8 caracteres.
+        </span>
+        <span *ngIf="form.controls.password.errors?.['passwordStrength'] && form.controls.password.touched" class="error">
+          Le mot de passe doit contenir une majuscule, une minuscule et un chiffre.
+        </span>
+      </label>
+
+      <label>
+        Confirmer le mot de passe
+        <input
+          type="password"
+          formControlName="confirmPassword"
+          placeholder="Confirmez votre mot de passe"
+          (input)="clearError()"
+        />
+        <span *ngIf="form.controls.confirmPassword.invalid && form.controls.confirmPassword.touched" class="error">
+          Veuillez confirmer votre mot de passe.
+        </span>
+        <span *ngIf="form.errors?.['passwordMismatch'] && form.controls.confirmPassword.touched" class="error">
+          Les mots de passe ne correspondent pas.
+        </span>
+      </label>
+
+      <div *ngIf="error()" class="alert error">
+        {{ error() }}
+      </div>
+
+      <footer class="auth-card__footer">
+        <button type="submit" class="btn primary" [disabled]="isLoading()">
+          {{ isLoading() ? 'Inscription...' : 'S\'inscrire' }}
+        </button>
+        <p class="auth-link">
+          Deja un compte ?
+          <a routerLink="/auth/login">Connectez-vous</a>
+        </p>
+      </footer>
+    </form>
+  </div>
+</section>
