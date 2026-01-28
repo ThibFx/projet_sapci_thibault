@@ -23,10 +23,10 @@ router.get(
   (req: Request, res: Response) => pollutionController.findById(req, res)
 );
 
-// Creer une pollution (authentification optionnelle - le createur sera enregistre si connecte)
+// Creer une pollution (authentification requise)
 router.post(
   '/',
-  optionalAuthMiddleware,
+  authMiddleware,
   uploadPhoto.single('photo'),
   createPollutionDto,
   validateRequest,

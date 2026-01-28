@@ -30,6 +30,7 @@ export interface AuthResponse {
 
 export interface RefreshResponse {
   accessToken: string;
+  refreshToken: string;
 }
 
 @Injectable({
@@ -59,7 +60,8 @@ export class AuthService {
     const refreshToken = this.tokenService.getRefreshToken();
     return this.api.post<RefreshResponse>('/auth/refresh', { refreshToken }).pipe(
       tap((response) => {
-        this.tokenService.setAccessToken(response.accessToken);
+        // Rotation: stocker les deux nouveaux tokens
+        this.tokenService.setTokens(response.accessToken, response.refreshToken);
       })
     );
   }

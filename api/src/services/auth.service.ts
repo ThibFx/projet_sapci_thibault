@@ -56,7 +56,7 @@ export class AuthService {
     };
   }
 
-  async refreshAccessToken(refreshToken: string): Promise<{ accessToken: string }> {
+  async refreshAccessToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string }> {
     let decoded: RefreshTokenPayload;
 
     try {
@@ -75,9 +75,10 @@ export class AuthService {
       throw new Error('Refresh token invalide');
     }
 
-    const accessToken = this.generateAccessToken(user);
+    // Rotation du refresh token: generer de nouveaux tokens
+    const tokens = await this.generateTokens(user);
 
-    return { accessToken };
+    return tokens;
   }
 
   async logout(userId: string): Promise<void> {
